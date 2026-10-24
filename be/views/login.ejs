@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/head.ejs') %>
+
+
+    <body class="bg-gradient-primary" data-alert=`${alert ? alert : '' }`>
+
+        <div class="container mt-5">
+
+            <!-- Outer Row -->
+            <div class="row justify-content-center">
+
+                <div class="col-xl-10 col-lg-12 col-md-9">
+
+                    <div class="card o-hidden border-0 shadow-lg my-5">
+                        <div class="card-body p-0">
+                            <!-- Nested Row within Card Body -->
+                            <div class="row">
+                                <div class="col-lg-6 d-none d-lg-block"
+                                    style="background: url(https://cdn.pixabay.com/photo/2018/05/16/15/41/computer-3406108_960_720.jpg);background-position: center; background-size: cover;">
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="p-5">
+                                        <div class="text-center">
+                                            <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        </div>
+                                        <form class="user">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control form-control-user" id="email"
+                                                    aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                                <input type="hidden" id="checkLogin">
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                    id="password" placeholder="Password">
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox small">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="customCheck">
+                                                    <label class="custom-control-label" for="customCheck">Remember
+                                                        Me</label>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-primary btn-user btn-block" id="login">
+                                                Login
+                                            </button>
+                                            <hr>
+                                            <!-- <a href="/google" class="btn btn-google btn-user btn-block">
+                                                <i class="fab fa-google fa-fw"></i> Login with Google
+                                            </a> -->
+                                            <div class="form-group text-center">
+                                                <button class="btn btn-block btn-social btn-google" id="btnGoogle"
+                                                    type="button"> <span class="fa fa-google"></span>Login with
+                                                    Google</button>
+                                            </div>
+                                            <div class="form-group text-center">
+                                                <button class="btn btn-block btn-social btn-facebook" id="btnFacebook"
+                                                    type="button"> <span class="fa fa-facebook"></span>Login with
+                                                    Facebook</button>
+                                            </div>
+                                        </form>
+                                        <hr>
+                                        <div class="text-center">
+                                            <a class="small" href="">Forgot Password?</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script src="/js/alerts.js"></script>
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-analytics.js";
+            import { getAuth, FacebookAuthProvider, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyAb86cfstfZo11kk5EwkI3KPfPcXTV3DdI",
+                authDomain: "hc-tech.firebaseapp.com",
+                projectId: "hc-tech",
+                storageBucket: "hc-tech.appspot.com",
+                messagingSenderId: "707901541960",
+                appId: "1:707901541960:web:23da34b0b69a7af384927d",
+                measurementId: "G-74XYX837EE"
+            };
+            // Initialize Firebase
+            const status = false;
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GoogleAuthProvider(app);
+            const facebookProvider = new FacebookAuthProvider(app);
+            const btnGoogle = document.getElementById('btnGoogle');
+            btnGoogle.addEventListener('click', async e => {
+                try {
+                    const result = await signInWithPopup(auth, provider)
+                    const user = result.user;
+                    $("#checkLogin").val(user.email)
+                } catch (error) {
+                    if (error.message == "Firebase: Error (auth/popup-closed-by-user).") error.message = "Đã hủy đăng nhập";
+                    showAlert("error", error.message);
+                }
+                if ($("#checkLogin").val() != "") $("#checkLogin").change()
+            })
+
+
+        </script>
+        <script src="/js/login.js"></script>
+    </body>
+
+</html>

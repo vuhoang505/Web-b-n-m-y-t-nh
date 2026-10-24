@@ -1,0 +1,65 @@
+<% layout('base') -%>
+    <div class="container">
+        <h1 class="my-4 text-center text-primary">Imports</h1>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col col-sm-9 text-dark">
+                        <h4><strong>List Imports</strong></h4>
+                    </div>
+                    <div class="col col-sm-3">
+                        <button type="button" id="add_data" class="btn btn-success btn-sm float-end">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="sample_data">
+                        <thead>
+                            <tr>
+                                <th>Importer</th>
+                                <th>Product</th>
+                                <th>Total Price</th>
+                                <th>CreatedAt</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="action_modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="post" id="sample_form" enctype="multipart/form-data">
+                    <div class="modal-header" id="dynamic_modal_title">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Products</label>
+                            <select id="invoice_items" name="invoices[]" multiple="multiple">
+                            </select>
+                        </div>
+                        <div class="list-item">
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="id" id="id" />
+                        <input type="hidden" name="action" id="action" value="Add" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/js/import.js"></script>

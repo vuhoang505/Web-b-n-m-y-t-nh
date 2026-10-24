@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600&display=swap');
+
+
+.img-all {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-family: 'Mulish', sans-serif;
+    padding: 20px 0;
+}
+
+/* MAIN STYLE */
+
+.img-cover {
+    width: 600px;
+    height: auto;
+    padding: 15px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    overflow: hidden;
+    background: #fafbff;
+}
+
+.img-cover .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.img-cover p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #878a9a;
+}
+
+.img-cover button {
+    outline: 0;
+    border: 0;
+        -webkit-appearence: none;
+	background: #5256ad;
+	color: #fff;
+	border-radius: 4px;
+	transition: 0.3s;
+	cursor: pointer;
+	font-weight: 400;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+	font-size: 0.8rem;
+	padding: 8px 13px;
+}
+
+.img-cover button:hover {
+	opacity: 0.8;
+}
+
+.img-cover button:active {
+	transform: translateY(5px);
+}
+
+.img-cover .drag-area {
+	width: 100%;
+	height: 160px;
+	border-radius: 5px;
+	border: 2px dashed #d5d5e1;
+	color: #c8c9dd;
+	font-size: 0.9rem;
+	font-weight: 500;
+	position: relative;
+	background: #dfe3f259;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+	-webkit-user-select: none;
+	margin-top: 10px;
+}
+
+.img-cover .drag-area .visible {
+	font-size: 18px;
+}
+.img-cover .select {
+    color: #5256ad;
+	margin-left: 5px;
+	cursor: pointer;
+	transition: 0.4s;
+}
+
+.img-cover .select:hover {
+	opacity: 0.6;
+}
+
+.img-cover .img-show {
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	max-height: 200px;
+	overflow-y: auto;
+	margin-top: 10px;
+	margin-left: 7%;
+}
+
+.img-cover .img-show .image {
+	width: calc(15%);
+	margin-right: 15px;
+	height: 75px;
+	position: relative;
+	margin-bottom: 8px;
+}
+
+.img-cover .img-show .image img {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+}
+
+.img-cover .img-show .image span {
+	position: absolute;
+	top: -2px;
+	right: 9px;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+/* dragover class will used in drag and drop system */
+.img-cover .drag-area.dragover {
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.img-cover .drag-area.dragover .on-drop {
+	display: inline;
+	font-size: 28px;
+}
+
+.img-cover input,
+.img-cover .drag-area .on-drop, 
+.img-cover .drag-area.dragover .visible {
+	display: none;
+}

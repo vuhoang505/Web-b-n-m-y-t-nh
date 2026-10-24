@@ -1,0 +1,160 @@
+<% layout('base') -%>
+
+    <div class="container">
+        <h1 class="my-4 text-center text-primary">Manage Product</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col col-sm-9 text-dark">
+                        <h4><strong>Product</strong></h4>
+                    </div>
+                    <div class="col col-sm-3">
+                        <button type="button" id="add_data" class="btn btn-success btn-sm float-end">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="sample_data">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Inventory</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" id="action_modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <form method="post" id="sample_form" enctype="multipart/form-data">
+                    <div class="modal-header" id="dynamic_modal_title">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2 edit-show">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" id="title" class="form-control" />
+                        </div>
+                        <div class="form-row mb-2">
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Category</label>
+                                <select name="category" class="form-control" id="category">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Brand</label>
+                                <select name="brand" class="form-control" id="brand">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Demand</label>
+                                <select name="demand" class="form-control" id="demand">
+                                    <option value="Văn-phòng">Văn phòng</option>
+                                    <option value="Học-sinh-Sinh-viên">Học sinh - Sinh viên</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Đồ-họa-Kỹ-thuật">Đồ họa - Kỹ thuật</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="form-label">Color</label>
+                                <select name="color" class="form-control" id="color">
+                                    <option value="Đen">Đen</option>
+                                    <option value="Bạc">Bạc</option>
+                                    <option value="Vàng">Vàng</option>
+                                    <option value="Trắng">Trắng</option>
+                                    <option value="Xám">Xám</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row mb-2 edit-show">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Price</label>
+                                <input type="number" name="price" id="price" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Promotion</label>
+                                <input type="number" name="promotion" id="promotion" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Weight</label>
+                                <input type="number" step="0.01" name="weight" id="weight" class="form-control" />
+                            </div>
+
+                        </div>
+                        <div class="form-row mb-2">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Ram</label>
+                                <input type="number" name="ram" id="ram" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Battery</label>
+                                <input type="text" name="battery" id="battery" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">CPU</label>
+                                <input type="text" name="cpu" id="cpu" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-row mb-2">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">OS</label>
+                                <input type="text" name="os" id="os" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Screen</label>
+                                <input type="text" name="screen" id="screen" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Graphic Card</label>
+                                <input type="text" name="graphicCard" id="graphicCard" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-2 edit-show">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" id="description" placeholder="Description" class="form-control"
+                                rows="30"></textarea>
+                        </div>
+                        <div class="mb-2 img-all edit-show">
+                            <div class="form-group">
+                                <div class="img-cover">
+                                    <div class="drag-area">
+                                        <span class="visible">
+                                            Drag & drop image here or
+                                            <span class="select" role="button">Browse</span>
+                                        </span>
+                                        <span class="on-drop">Drop images here</span>
+                                        <input name="images" type="file" class="images" multiple />
+                                    </div>
+
+                                    <!-- IMAGE PREVIEW CONTAINER -->
+                                    <div class="img-show"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="id" id="id" />
+                        <input type="hidden" name="action" id="action" value="Add" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/js/product.js"></script>
+    <script src="/js/upload.js"></script>

@@ -1,0 +1,269 @@
+<%- include('head') %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-start mb-3">
+    <a href="/" class="btn btn-outline-primary d-flex align-items-center gap-2">
+      <i class="bi bi-arrow-left"></i> Quay lại trang chính
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-4 mb-5">
+    <div class="card-header bg-gradient bg-primary text-white text-center py-3 rounded-top">
+      <h3 class="fw-bold mb-0">Thông tin Admin</h3>
+    </div>
+    
+    <div class="card-body p-4">
+      <div class="text-center mb-4">
+        <div class="position-relative d-inline-block">
+          <img
+            id="avatarPreview"
+            src="<%= admin.avatar || 'https://cdn-icons-png.flaticon.com/512/149/149071.png' %>"
+            alt="Admin Avatar"
+            class="rounded-circle shadow-sm border border-3 border-light"
+            width="130"
+            height="130"
+            style="object-fit: cover;"
+          />
+          
+          <label for="avatarInput" class="position-absolute bottom-0 end-0 bg-white border border-2 rounded-circle p-2 shadow-sm" style="cursor: pointer; right: 5px; bottom: 5px;" title="Đổi ảnh đại diện">
+            <i class="bi bi-camera-fill text-primary"></i>
+          </label>
+          <input type="file" id="avatarInput" accept="image/*" hidden>
+        </div>
+
+        <h4 class="mt-3 fw-bold text-primary"><%= admin.name %></h4>
+        <p class="text-muted mb-0">Vai trò: <strong><%= admin.role %></strong></p>
+
+        <div id="uploadStatus" class="mt-2" style="display: none;">
+            <div class="alert alert-info py-2 px-3 d-inline-block text-start shadow-sm">
+                <div class="mb-1 border-bottom border-secondary pb-1">
+                    <i class="bi bi-file-earmark-image-fill text-danger"></i> 
+                    <strong id="fileNameDisplay">filename.jpg</strong>
+                </div>
+                <div style="font-size: 0.9em;">
+                    <i class="bi bi-calendar-check"></i> <span id="fileTimeDisplay">--:--</span> &nbsp;|&nbsp; 
+                    <i class="bi bi-hdd-fill"></i> <span id="fileSizeDisplay">0 KB</span>
+                </div>
+            </div>
+            <div id="uploadMessage" class="small mt-1 fw-bold"></div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6"><p><strong>Email:</strong> <%= admin.email %></p></div>
+        <div class="col-md-6"><p><strong>Số điện thoại:</strong> <%= admin.phone || 'Chưa có' %></p></div>
+        <div class="col-md-6"><p><strong>Giới tính:</strong> <%= admin.gender || 'Chưa có' %></p></div>
+        <div class="col-md-6"><p><strong>Ngày sinh:</strong> <%= admin.dateOfBirth || 'Chưa có' %></p></div>
+        
+        <div class="col-md-6">
+          <p><strong>Ngày tạo tài khoản:</strong>
+            <span id="createdAtUTC" class="text-primary">Đang tải...</span>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Thời gian đã tạo:</strong>
+            <span id="daysActive" class="fw-bold text-success">Đang tính...</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button id="exportPDF" class="btn btn-outline-danger px-4 py-2">
+          <i class="bi bi-file-earmark-pdf"></i> Xuất thông tin PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // --- 1. KHAI BÁO DOM ELEMENTS ---
+  const createdAtEl = document.getElementById("createdAtUTC");
+  const daysActiveEl = document.getElementById("daysActive");
+  
+  // Elements liên quan upload
+  const avatarInput = document.getElementById("avatarInput");
+  const avatarPreview = document.getElementById("avatarPreview");
+  const uploadStatus = document.getElementById("uploadStatus");
+  const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const fileTimeDisplay = document.getElementById("fileTimeDisplay");
+  const fileSizeDisplay = document.getElementById("fileSizeDisplay");
+  const uploadMessage = document.getElementById("uploadMessage");
+
+  // Biến lưu trữ thông tin file để dùng cho PDF
+  let recentUploadData = null;
+
+  // --- 2. XỬ LÝ NGÀY TẠO TÀI KHOẢN (TRỪ 7 TIẾNG) ---
+  const rawDateFromServer = "<%= admin.createdAt %>";
+  let createdAt = new Date(rawDateFromServer);
+
+  if (!rawDateFromServer || isNaN(createdAt.getTime())) {
+      createdAt = new Date(); // Fallback nếu lỗi
+  } else {
+      createdAt.setHours(createdAt.getHours() - 7); // Yêu cầu: Trừ 7h
+  }
+  
+  if (createdAtEl) {
+      // Hiển thị dạng: 08:30:00 14/11/2025
+      createdAtEl.textContent = createdAt.toLocaleString("vi-VN");
+  }
+
+  // --- 3. ĐỒNG HỒ ĐẾM THỜI GIAN (LUÔN DƯƠNG) ---
+  function updateDaysActive() {
+    const now = new Date();
+    // Dùng Math.abs để lấy trị tuyệt đối (tránh số âm do lệch giờ)
+    let diff = Math.abs(now - createdAt);
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    if(daysActiveEl) {
+        daysActiveEl.textContent = `${days} ngày ${hours} giờ ${minutes} phút ${seconds} giây`;
+    }
+  }
+  setInterval(updateDaysActive, 1000);
+  updateDaysActive(); // Chạy ngay lần đầu
+
+  // --- 4. XỬ LÝ UPLOAD AVATAR ---
+  if (avatarInput) {
+    avatarInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // A. Hiển thị Preview ảnh
+        const objectUrl = URL.createObjectURL(file);
+        avatarPreview.src = objectUrl;
+
+        // B. Lấy thông tin chi tiết (Tên, Giờ, Size)
+        const fileName = file.name;
+        const now = new Date();
+        // Format ngày giờ: 14:30:00 14/11/2025
+        const fullTimeStr = now.toLocaleString("vi-VN"); 
+        
+        // Tính dung lượng KB/MB
+        let sizeStr = (file.size < 1024 * 1024) 
+            ? (file.size / 1024).toFixed(2) + " KB" 
+            : (file.size / (1024 * 1024)).toFixed(2) + " MB";
+
+        // C. Lưu vào biến global để lát xuất PDF dùng
+        recentUploadData = {
+            name: fileName,
+            time: fullTimeStr,
+            size: sizeStr
+        };
+
+        // D. Hiển thị lên giao diện HTML
+        uploadStatus.style.display = "block";
+        fileNameDisplay.textContent = fileName;
+        fileTimeDisplay.textContent = fullTimeStr;
+        fileSizeDisplay.textContent = sizeStr;
+        
+        uploadMessage.textContent = "Đang tải lên server...";
+        uploadMessage.className = "small mt-1 text-warning";
+
+        // E. Gửi dữ liệu về Server (AJAX)
+        const formData = new FormData();
+        formData.append('avatar', file); // 'avatar' phải trùng tên field trong multer
+
+        try {
+            const response = await fetch('/admin/update-avatar', { 
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                uploadMessage.textContent = "Cập nhật thành công!";
+                uploadMessage.className = "small mt-1 text-success";
+            } else {
+                uploadMessage.textContent = "Lỗi Server: Không lưu được.";
+                uploadMessage.className = "small mt-1 text-danger";
+            }
+        } catch (err) {
+            console.error(err);
+            uploadMessage.textContent = "Lỗi kết nối mạng.";
+            uploadMessage.className = "small mt-1 text-danger";
+        }
+    });
+  }
+
+  // --- 5. XUẤT PDF ---
+  document.getElementById("exportPDF").addEventListener("click", async () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+    
+    // Hàm bỏ dấu tiếng Việt
+    const removeVietnameseTones = str => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D") : "";
+
+    // Thời gian xuất file: Cộng 7 tiếng (+7h)
+    const exportTime = new Date();
+    exportTime.setHours(exportTime.getHours());
+    const exportTimeStr = exportTime.toLocaleString("vi-VN");
+
+    // Vẽ khung & Màu sắc
+    doc.setFillColor(245,245,245); doc.rect(10,10,190,277,"F");
+    doc.setDrawColor(255,102,0); doc.setLineWidth(1.2); doc.roundedRect(12,12,186,273,5,5);
+    
+    // Header
+    doc.setFont("Helvetica","bold"); doc.setTextColor(255,102,0); doc.setFontSize(22);
+    doc.text("VHH SHOP",105,25,{align:"center"});
+    doc.setTextColor(0,0,0); doc.setFontSize(14);
+    doc.text("Ho so tai khoan Admin",105,35,{align:"center"});
+
+    // Chèn Ảnh Avatar
+    try {
+        const img = new Image(); img.crossOrigin = "Anonymous";
+        img.src = avatarPreview.src; // Lấy ảnh đang hiển thị
+        await new Promise(r => { img.onload = r; img.onerror = r; });
+        doc.addImage(img,"PNG",150,50,40,40);
+        doc.setDrawColor(255,102,0); doc.circle(170,70,22); // Viền tròn
+    } catch(e){}
+
+    // Logic hiển thị thông tin file upload trong PDF
+    let fileInfoText = "Khong co (Chua upload trong phien nay)";
+    if (recentUploadData) {
+        // Format: Tên file (Size) - Thời gian
+        // Ví dụ: hinh.jpg (2MB) - Upload: 14:30 14/11/2025
+        fileInfoText = `${recentUploadData.name} (${recentUploadData.size}) - Upload: ${recentUploadData.time}`;
+    }
+
+    // Mảng dữ liệu in ra PDF
+    const info = [
+      ["Ho ten", "<%= admin.name %>"],
+      ["Email", "<%= admin.email %>"],
+      ["So dien thoai", "<%= admin.phone || 'Chua co' %>"],
+      ["Ngay tao", createdAtEl.textContent],
+      ["Thoi gian da tao", daysActiveEl.textContent],
+      ["Anh vua upload", fileInfoText] // Dòng thông tin file
+    ];
+
+    let y = 60;
+    doc.setFontSize(12);
+    info.forEach(([label, value]) => {
+      doc.setFont("Helvetica","bold"); 
+      doc.text(removeVietnameseTones(`${label}:`), 25, y);
+      
+      doc.setFont("Helvetica","normal");
+      // Tự động xuống dòng nếu text quá dài
+      const lines = doc.splitTextToSize(removeVietnameseTones(value), 110);
+      doc.text(lines, 70, y);
+      
+      y += 7 * lines.length + 8; // Khoảng cách dòng
+    });
+
+    // Footer PDF
+    doc.setFontSize(10); doc.setTextColor(120,120,120);
+    doc.text(removeVietnameseTones(`Xuat file luc: ${exportTimeStr}`), 25, 250);
+    doc.text(removeVietnameseTones("Ky ten:"), 150, 250);
+    doc.line(170, 249, 195, 249);
+
+    doc.save("HoSo_Admin.pdf");
+  });
+});
+</script>
+
+<%- include('footer') %>

@@ -1,0 +1,59 @@
+<% layout('base') -%>
+<div class="container">
+    <h1 class="my-4 text-center text-primary">Categories</h1>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col col-sm-9 text-dark">
+                    <h4><strong>List Categories</strong></h4>
+                </div>
+                <div class="col col-sm-3">
+                    <button type="button" id="add_data" class="btn btn-success btn-sm float-end">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="sample_data">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="modal" id="action_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="sample_form" enctype="multipart/form-data">
+                <div class="modal-header" id="dynamic_modal_title">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2 edit-show">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="name" id="name" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="id" id="id" />
+                    <input type="hidden" name="action" id="action" value="Add" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/js/category.js"></script>

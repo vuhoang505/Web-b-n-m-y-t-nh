@@ -1,0 +1,200 @@
+<% layout('base') -%>
+    <div class="row mx-0">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-header px-4 py-5">
+                    <h5 class="text-muted mb-0"><span style="color: #a8729a;font-size: 26px;">
+                            <%= data.user.name %> 's Order Product
+                        </span></h5>
+                </div>
+                <div class="card-body p-4">
+                    <% data.cart.forEach(function(value) {const name=value.product.title.length>
+                        28?value.product.title.slice(0,29):value.product.title;const percent =
+                        value.product.percent?value.product.percent:0;
+                        %>
+                        <div class="card shadow-0 border mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="<%= value.product.images[0]%>" class="img-fluid" alt="Phone">
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0">
+                                            <%= name %>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">
+                                            <%= value.product.color%>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">Ram: <%= value.product.ram%>GB</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">Qty: <%= value.quantity%>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">
+                                            <%= value.product.price%> VND <br>-<%= percent%> %
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <% }); %>
+
+                            <div class="card card-stepper text-black" style="border-radius: 16px;">
+
+                                <div class="card-body p-5">
+
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <div>
+                                            <h5 class="mb-0">INVOICE <span class="text-primary font-weight-bold"></span>
+                                                <%= data._id %>
+                                                    </span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" value="<%= data.status%>" id="status" />
+
+                                    <div class="progress">
+                                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"
+                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between pt-5">
+                                        <div class="d-lg-flex align-items-center">
+                                            <i
+                                                class="fas fa-clipboard-list fa-3x me-lg-4 mb-3 mb-lg-0 text-secondary"></i>
+                                            <div>
+                                                <p class="fw-bold mb-1">Order</p>
+                                                <p class="fw-bold mb-0">Processed</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-lg-flex align-items-center">
+                                            <i class="fas fa-box-open fa-3x me-lg-4 mb-3 mb-lg-0 text-warning"></i>
+                                            <div>
+                                                <p class="fw-bold mb-1">Order</p>
+                                                <p class="fw-bold mb-0">Shipped</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-lg-flex align-items-center">
+                                            <i class="fas fa-shipping-fast fa-3x me-lg-4 mb-3 mb-lg-0 text-info"></i>
+                                            <div>
+                                                <p class="fw-bold mb-1">Order</p>
+                                                <p class="fw-bold mb-0">On Route</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-lg-flex align-items-center">
+                                            <i class="fas fa-home fa-3x me-lg-4 mb-3 mb-lg-0 text-success"></i>
+                                            <div>
+                                                <p class="fw-bold mb-1">Order</p>
+                                                <p class="fw-bold mb-0">Arrived</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between pt-2">
+                                <p class="fw-bold mb-0">Order Details</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <p class="text-muted mb-0">Invoice Date : <%=data.date%>
+                                </p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span>
+                                    <%=data.total%> VND
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="text-muted mb-0">Receiver : <%=data.receiver%>
+                                </p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>
+                                    <%=data.discount%> VND
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="text-muted mb-0">Phone : <%=data.phone%>
+                                </p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="text-muted mb-0">Address : 22 Dec,2019</p>
+                                <p class="text-muted mb-0"><span class="fw-bold me-4">Payment</span>
+                                    <%=data.payments%>
+                            </div>
+                </div>
+                <div class="card-footer border-0 px-4 py-5"
+                    style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                    <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+                        paid: <span class="h2 mb-0 ms-2">
+                            <%=data.totalPrice%> VND
+                        </span></h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10 col-xl-4">
+            <div class="border-status py-5">
+                <div class="order-action text-center">
+                    <h4 class="text-primary">Order Action</h4>
+                </div>
+                <hr style="height: 0;">
+
+                <div class="text-center">
+                    <% if (data.status=="Cancelled" ) { %>
+                        <div class="text-center">
+                            <button class="btn btn-danger" disabled>Cancelled</button>
+                        </div>
+                        <%}else if(data.status=="Processed" ) {%>
+                            <div class="d-flex text-center">
+                                <div class="col-md-6">
+                                    <button class="btn btn-danger" data-id="<%=data._id %>"
+                                        onclick="cancelOrder(this)">Cancel Order</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-success" value="Waiting Goods" data-id="<%=data._id %>"
+                                        onclick="acceptOrder(this)">Accept Order</button>
+                                </div>
+                            </div>
+                            <%} else if(data.status=="Waiting Goods" ){ %>
+                                <div class="d-flex text-center">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-danger" data-id="<%=data._id %>"
+                                            onclick="cancelOrder(this)">Cancel Order</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success" value="Delivery" data-id="<%=data._id %>"
+                                            onclick="acceptOrder(this)">Order Shipped</button>
+                                    </div>
+                                </div>
+                                <%} else if(data.status=="Delivery" ){ %>
+                                    <div class="d-flex text-center">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-danger" data-id="<%=data._id %>"
+                                                onclick="cancelOrder(this)">Cancel Order</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-success" value="Success" data-id="<%=data._id %>"
+                                                onclick="acceptOrder(this)">Success</button>
+                                        </div>
+                                    </div>
+                                    <%} else { %>
+                                        <div class="text-center">
+                                            <button class="btn btn-success" disabled>Đã thanh
+                                                toán</button>
+                                        </div>
+                                        <% } %>
+                </div>
+            </div>
+            <div class="my-5 text-center">
+                <a href="/orders"><button href="" class="btn btn-primary">Back</button></a>
+            </div>
+        </div>
+    </div>
+    <script src="/js/detail.js"></script>
